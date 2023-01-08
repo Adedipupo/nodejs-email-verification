@@ -31,8 +31,8 @@ const PORT = process.env.PORT || 4343
 app.get('/', (req, res) => {
   res.send('api is live...')
 });
-console.log("here")
-app.use('api/users', userRoutes);
+
+app.use('/api/users', userRoutes);
 
 
 mongoose

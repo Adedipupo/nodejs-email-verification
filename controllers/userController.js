@@ -2,9 +2,8 @@ const UserModel = require("../models/user/UserModel");
 
 
 const registerUser = async(req,res) => {
-    console.log("here333")
+    const { username, password, email,phone } = req.body;
     try {
-        const { username, password, email,phone } = req.body;
 
         if (!username || !email || !password || !phone) {
             res.status(400)
@@ -24,6 +23,7 @@ const registerUser = async(req,res) => {
             phone
           })
         
+          console.log("user", user)
         //   const token = generateToken(user._id)
         
         //   res.cookie('token', token, {
@@ -46,7 +46,7 @@ const registerUser = async(req,res) => {
             throw new Error('Invalid user data')
           }
     } catch (error) {
-        
+        console.log(error)
     }
 };
 
