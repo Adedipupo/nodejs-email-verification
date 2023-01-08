@@ -105,12 +105,13 @@ const getUser = async (req, res) => {
     }
 
     if (user) {
-      const { _id, usernamename, email, phone } = user
+      const { _id, username, email, phone,isVerified } = user
       res.status(200).json({
         _id,
         username,
         email,
         phone,
+        isVerified
       })
     } else {
       res.status(404)
