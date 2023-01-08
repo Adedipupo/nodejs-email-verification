@@ -1,4 +1,5 @@
 const UserModel = require("../models/user/UserModel");
+const { generateToken } = require("../utils/generateToken");
 
 
 const registerUser = async(req,res) => {
@@ -23,14 +24,13 @@ const registerUser = async(req,res) => {
             phone
           })
         
-          console.log("user", user)
-        //   const token = generateToken(user._id)
+          const token = generateToken(user._id)
         
-        //   res.cookie('token', token, {
-        //     path: '/',
-        //     httpOnly: true,
-        //     expires: new Date(Date.now() + 1000 * 86400),
-        //   })
+          res.cookie('token', token, {
+            path: '/',
+            httpOnly: true,
+            expires: new Date(Date.now() + 1000 * 86400),
+          })
         
           if (user) {
             const { _id, username, email, phone, } = user
@@ -39,7 +39,7 @@ const registerUser = async(req,res) => {
               username,
               email,
               phone,
-            //   token,
+            token,
             })
           } else {
             res.status(400)
