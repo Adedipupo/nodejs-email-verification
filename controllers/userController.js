@@ -2,6 +2,7 @@ const UserModel = require('../models/user/UserModel')
 const { generateToken } = require('../utils/generateToken')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const otpGenerator = require('otp-generator')
 
 const registerUser = async (req, res) => {
   const { username, password, email, phone } = req.body
@@ -152,10 +153,16 @@ const logoutUser = async (req, res) => {
   })
 }
 
+const getOtp = async (req, res) => {
+  const newOtp =  otpGenerator.generate(6, { digits: true});
+  console.log("newOtp",newOtp)
+}
+
 module.exports = {
   registerUser,
   loginUser,
   getUser,
   loginStatus,
-  logoutUser
+  logoutUser,
+  getOtp
 }
