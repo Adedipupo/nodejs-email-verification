@@ -71,7 +71,7 @@ const registerUser = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const user = await UserModel.findOne({ _id: req.params.id });
-    if (!user) return res.status(400).send("Invalid link");
+    if (!user) return res.status(400).send("User not found");
 
     const token = await TokenModel.findOne({
       userId: user._id,

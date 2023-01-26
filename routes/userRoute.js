@@ -6,13 +6,14 @@ const {
   loginStatus,
   logoutUser,
   getOtp,
+  verifyEmail,
 } = require('../controllers/userController');
 const {verifyUser} = require('../middleware/authMiddleware');
 
 const router = express.Router()
 
-router.get('/otp', getOtp)
 router.post('/signup', registerUser)
+router.get('/verify/:id/:token', verifyEmail)
 router.post('/login', loginUser)
 router.get('/me',verifyUser, getUser)
 router.get('/status', loginStatus)
