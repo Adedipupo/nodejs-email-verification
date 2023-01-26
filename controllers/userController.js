@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const otpGenerator = require('otp-generator')
 const { welcomeEmail } = require('../utils/sendEmail')
+const TokenModel = require('../models/user/tokenModel')
+const crypto = import("crypto");
 
 const registerUser = async (req, res) => {
   const { username, password, email, phone } = req.body
@@ -24,15 +26,22 @@ const registerUser = async (req, res) => {
       email,
       password,
       phone,
+      isVerified
     })
 
-    const token = generateToken(user._id)
+    // const token = generateToken(user._id)
 
-    res.cookie('token', token, {
-      path: '/',
-      httpOnly: true,
-      expires: new Date(Date.now() + 1000 * 86400),
-    })
+    // res.cookie('token', token, {
+    //   path: '/',
+    //   httpOnly: true,
+    //   expires: new Date(Date.now() + 1000 * 86400),
+    // })
+
+    let token = await new TokenModel({
+      userId: user._id,
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+
     const message = `
     <h2>Hello, ${user.username}</h2> 
     <p>Thank you for registering</p>
@@ -55,7 +64,7 @@ const registerUser = async (req, res) => {
         username,
         email,
         phone,
-        token,
+        token
       })
     } else {
       res.status(400)
