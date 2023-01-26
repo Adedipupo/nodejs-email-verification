@@ -42,16 +42,9 @@ const registerUser = async (req, res) => {
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-    const message = `
-    <h2>Hello, ${user.username}</h2> 
-    <p>Thank you for registering</p>
-    <p>hhhhh111</p>
+    const message = `Click here to verify your email ${process.env.BASE_URL}/user/verify/${user.id}/${token.token}`
 
-    <p>Regards...</p>
-    <p>Dipo team @2023 </p>
-  `
-
-    const subject = 'Successful Registration'
+    const subject = 'An Email sent to your account please verify'
     const send_to = user.email
     const send_from = process.env.EMAIL_USER
 
@@ -72,6 +65,26 @@ const registerUser = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
+  }
+}
+
+const verifyEmail = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).send("Invalid link");
+
+    const token = await TokenModel.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token) return res.status(400).send("Invalid link");
+
+    await UserModel.updateOne({ _id: user._id, isVerified: true });
+    await TokenModel.findByIdAndRemove(token._id);
+
+    res.send("email verified sucessfully");
+  } catch (error) {
+    res.status(400).send("An error occured");
   }
 }
 
@@ -184,6 +197,7 @@ const getOtp = async (req, res) => {
 
 module.exports = {
   registerUser,
+  verifyEmail,
   loginUser,
   getUser,
   loginStatus,
