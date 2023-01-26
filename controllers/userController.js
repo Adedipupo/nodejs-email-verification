@@ -3,6 +3,7 @@ const { generateToken } = require('../utils/generateToken')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const otpGenerator = require('otp-generator')
+const { welcomeEmail } = require('../utils/sendEmail')
 
 const registerUser = async (req, res) => {
   const { username, password, email, phone } = req.body
@@ -32,6 +33,20 @@ const registerUser = async (req, res) => {
       httpOnly: true,
       expires: new Date(Date.now() + 1000 * 86400),
     })
+    const message = `
+    <h2>Hello, ${user.username}</h2> 
+    <p>Thank you for registering</p>
+    <p>hhhhh111</p>
+
+    <p>Regards...</p>
+    <p>Dipo team @2023 </p>
+  `
+
+    const subject = 'Successful Registration'
+    const send_to = user.email
+    const send_from = process.env.EMAIL_USER
+
+    await welcomeEmail(subject, message, send_to, send_from)
 
     if (user) {
       const { _id, username, email, phone } = user
@@ -106,13 +121,13 @@ const getUser = async (req, res) => {
     }
 
     if (user) {
-      const { _id, username, email, phone,isVerified } = user
+      const { _id, username, email, phone, isVerified } = user
       res.status(200).json({
         _id,
         username,
         email,
         phone,
-        isVerified
+        isVerified,
       })
     } else {
       res.status(404)
@@ -154,8 +169,8 @@ const logoutUser = async (req, res) => {
 }
 
 const getOtp = async (req, res) => {
-  const newOtp =  otpGenerator.generate(6, { digits: true});
-  console.log("newOtp",newOtp)
+  const newOtp = otpGenerator.generate(6, { digits: true })
+  console.log('newOtp', newOtp)
 }
 
 module.exports = {
@@ -164,5 +179,5 @@ module.exports = {
   getUser,
   loginStatus,
   logoutUser,
-  getOtp
+  getOtp,
 }
