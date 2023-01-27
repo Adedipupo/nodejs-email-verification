@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const otpGenerator = require('otp-generator')
 const { welcomeEmail } = require('../utils/sendEmail')
 const TokenModel = require('../models/user/tokenModel')
-const crypto = import("crypto");
+const crypto = require("crypto");
 
 const registerUser = async (req, res) => {
   const { username, password, email, phone } = req.body
@@ -25,8 +25,7 @@ const registerUser = async (req, res) => {
       username,
       email,
       password,
-      phone,
-      isVerified
+      phone    
     })
 
     // const token = generateToken(user._id)
@@ -40,6 +39,8 @@ const registerUser = async (req, res) => {
     let token = await new TokenModel({
       userId: user._id,
       token: crypto.randomBytes(32).toString("hex"),
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 30 * (60 * 1000)
     }).save();
 
     const message = `Click here to verify your email ${process.env.BASE_URL}/user/verify/${user.id}/${token.token}`
