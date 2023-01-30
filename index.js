@@ -7,6 +7,7 @@ const cors = require('cors')
 const { urlencoded } = require('express')
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoute');
+const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config()
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/order', orderRoutes);
 
 
 mongoose
